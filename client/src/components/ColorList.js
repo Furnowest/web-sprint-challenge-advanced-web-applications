@@ -25,20 +25,24 @@ const ColorList = ({ colors, updateColors }) => {
     console.log({colorToEdit});
     const id = colorToEdit.id;
     axiosWithAuth()
-    .put(`colors/$.id`)
+    .put(`colors/$.id`, colorToEdit)
     .then(res => console.log(res.data));
    
   };
 
   const deleteColor = color => {
     // make a delete request to delete this color
+    axiosWithAuth()
+    .delete(`colors/${color.id}`)
+    .then( res => res.data)
+    .catch(err => console.log(err))
   };
 
   return (
     <div className="colors-wrap">
       <p>colors</p>
       <ul>
-        {colors.map(color => (
+        {colors.map((color,i) => (
           <li key={color.color} onClick={() => editColor(color)}>
             <span>
               <span className="delete" onClick={e => {
