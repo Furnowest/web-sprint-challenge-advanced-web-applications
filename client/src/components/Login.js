@@ -1,56 +1,58 @@
-import React from "react";
-import { axiosWithAuth } from '../utils/AxiosWithAuth';
-
-class Login extends React.Component{
-  state = {
-    credentials: {
-        username: "",
-        password: ""
-    }
-};
+import React, {useState} from "react";
+// import { axiosWithAuth } from '../utils/AxiosWithAuth';
+import axios from 'axios';
+import { useHistory } from 'react-router-dom';
 
 
-handleChange = (e) => {
-    this.setState({
-        credentials: {
-            ...this.state.credentials,
-            [e.target.name]: e.target.value
-        }
-    });
-};
+const Login =() =>{
 
 
-login = (e) => {
+const [state,setState] =useState({
+  username: "",
+  password: ""
+
+});
+        
+const history= useHistory();
+const handleChange = e => {
     e.preventDefault();
-    axiosWithAuth()
-        .post("/api/color", this.state.credentials)
+    setState({
+      ...state,
+      [e.target.name]:e.target.value
+    })
+  }
+        
+const login = e => {
+    e.preventDefault();
+    axios
+        .post("http://localhost:5000/api/login")
         .then((res) => {
-            window.localStorage.setItem("token", res.data.payload);
-            this.props.history.push("/bubble-page");
+           localStorage.setItem('token',res.data.payload);
+           history.push('/protected');
         })
         .catch((err) => console.log(err));
 };
   // make a post request to retrieve a token from the api
   // when you have handled the token, navigate to the BubblePage route
-  render() {
+
     return (
         <div>
-          <h1>Welcome to the Bubble App!</h1>
-                <p>Build a login page here</p>
-            <form onSubmit={this.login}>
+          {/* <h1>Welcome to the Bubble App!</h1> */}
+                {/* <p>Build a login page here</p> */}
+            <form onSubmit={login}>
                 <input
                     type="text"
                     name="username"
                     placeholder='username'
-                    value={this.state.credentials.username}
-                    onChange={this.handleChange}
+                    value={state.username}
+                    onChange={handleChange}
                 />
                 <input
                     type="password"
                     name="password"
                     placeholder='password'
-                    value={this.state.credentials.password}
-                    onChange={this.handleChange}
+                    value={state.password}
+                    onChange={handleChange}
                 />
             </form>
             <button>Log in</button>
@@ -59,7 +61,7 @@ login = (e) => {
         </div>
     );
 }
-}
+
   
 export default Login 
   
